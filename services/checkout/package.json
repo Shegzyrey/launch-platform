@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
+    "predev": "prisma generate",
     "test": "jest",
+    "pretest": "prisma generate",
     "build": "tsc",
+    "prebuild": "prisma generate",
     "start": "node dist/server.js",
     "dev": "tsx src/server.ts"
   },
@@ -27,6 +30,9 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
-    "express": "^5.2.1"
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "express": "^5.2.1",
+    "prisma": "^7.8.0"
   }
 }
