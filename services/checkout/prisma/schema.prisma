@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Order {
+  id                     String   @id @default(uuid())
+  orderReference         String   @unique @map("order_reference")
+  customerEmailHash      String   @map("customer_email_hash")
+  status                 String
+  subtotalMinor          Int      @map("subtotal_minor")
+  discountMinor          Int      @default(0) @map("discount_minor")
+  totalMinor             Int      @map("total_minor")
+  currency               String   @default("GBP")
+  inventoryReservationId String?  @map("inventory_reservation_id")
+  idempotencyKeyHash     String?  @map("idempotency_key_hash")
+  correlationId          String?  @map("correlation_id")
+  createdAt              DateTime @default(now()) @map("created_at")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  items                  OrderItem[]
+  events                 OrderEventOutbox[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id             String @id @default(uuid())
+  orderId        String @map("order_id")
+  sku            String
+  quantity       Int
+  unitPriceMinor Int    @map("unit_price_minor")
+  lineTotalMinor Int    @map("line_total_minor")
+
+  order          Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+model OrderEventOutbox {
+  id          String    @id @default(uuid())
+  eventId     String    @unique @map("event_id")
+  orderId     String    @map("order_id")
+  eventType   String    @map("event_type")
+  payloadJson Json      @map("payload_json")
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([publishedAt])
+  @@map("order_events_outbox")
+}
+
+model IdempotencyRecord {
+  id                 String   @id @default(uuid())
+  idempotencyKeyHash String   @unique @map("idempotency_key_hash")
+  requestHash        String   @map("request_hash")
+  responseJson       Json?    @map("response_json")
+  statusCode         Int?     @map("status_code")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  @@map("idempotency_records")
+}
