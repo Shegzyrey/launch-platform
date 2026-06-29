@@ -1,0 +1,56 @@
+node_modules
+# Keep environment variables out of version control
+.env
+.env*
+README.md
+
+/src/generated/prisma
+
+node_modules/*
+
+
+
+
+# ==========================================
+# Dependency & Build Directories
+# ==========================================
+node_modules/
+dist/
+build/
+
+# ==========================================
+# Environments & Secrets (CRITICAL SECURITY)
+# ==========================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.testing
+
+# ==========================================
+# Prisma Specifics
+# ==========================================
+# Do NOT ignore 'schema.prisma' or 'migrations/' directory (they belong in Git)
+# Ignore sqlite dev databases if using local fallback storage
+*.db
+*.db-journal
+
+# ==========================================
+# Testing & Coverage Tools
+# ==========================================
+coverage/
+.jest/
+*.log
+
+# ==========================================
+# OS & IDE System Noise
+# ==========================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
